@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>Linkway FDI - 外资选址</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        input, select { font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const CheckCircle = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        );
+
+        const X = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        );
+
+        const App = () => {
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [agreeTerms, setAgreeTerms] = useState(false);
+            const [showTerms, setShowTerms] = useState(false);
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (!username || !password) {
+                    alert('请填写用户名和密码');
+                    return;
+                }
+                if (!agreeTerms) {
+                    alert('请同意用户协议');
+                    return;
+                }
+                setIsLoggedIn(true);
+            };
+
+            if (!isLoggedIn) {
+                return (
+                    <div className="max-w-md mx-auto bg-white min-h-screen flex items-center justify-center p-8">
+                        <div className="w-full max-w-sm">
+                            <div className="text-center mb-12">
+                                <div className="w-24 h-24 border-4 border-black flex items-center justify-center mx-auto mb-8">
+                                    <div className="text-center">
+                                        <div className="text-black font-bold text-xs">LINKWAY</div>
+                                        <div className="text-black text-[10px]">FDI</div>
+                                    </div>
+                                </div>
+                                <h1 className="text-4xl font-light text-black mb-2">外资选址</h1>
+                                <h2 className="text-lg font-light text-gray-400 mb-6">FOREIGN DIRECT INVESTMENT</h2>
+                                <div className="w-16 h-px bg-black mx-auto mb-8"></div>
+                            </div>
+
+                            {showTerms && (
+                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                                    <div className="bg-white max-w-lg w-full border-4 border-black">
+                                        <div className="bg-black text-white p-6 flex justify-between">
+                                            <h2 className="text-xl font-light">用户协议 / TERMS</h2>
+                                            <button onClick={() => setShowTerms(false)} className="w-10 h-10 border border-white flex items-center justify-center">
+                                                <X className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                        <div className="p-6">
+                                            <p className="mb-4">欢迎使用林克威外资选址平台。</p>
+                                            <p className="text-sm text-gray-500">Welcome to Linkway FDI Platform.</p>
+                                        </div>
+                                        <div className="border-t-2 border-black p-6">
+                                            <button onClick={() => setShowTerms(false)} className="w-full bg-black text-white p-4">
+                                                我已阅读 / I UNDERSTAND
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <form onSubmit={handleLogin} className="space-y-6">
+                                <div>
+                                    <div className="text-sm font-light mb-2">用户名 / USERNAME</div>
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="admin 或 member"
+                                        className="w-full p-4 border-2 border-black outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <div className="text-sm font-light mb-2">密码 / PASSWORD</div>
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="任意密码"
+                                        className="w-full p-4 border-2 border-black outline-none"
+                                    />
+                                </div>
+
+                                <div className="flex items-start space-x-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setAgreeTerms(!agreeTerms)}
+                                        className={`w-6 h-6 border-2 border-black flex items-center justify-center flex-shrink-0 mt-1 ${agreeTerms ? 'bg-black' : 'bg-white'}`}
+                                    >
+                                        {agreeTerms && <CheckCircle className="w-4 h-4 text-white" />}
+                                    </button>
+                                    <div className="text-xs">
+                                        同意 
+                                        <button type="button" onClick={() => setShowTerms(true)} className="underline mx-1">用户协议</button>
+                                        / Agree to 
+                                        <button type="button" onClick={() => setShowTerms(true)} className="underline ml-1">Terms</button>
+                                    </div>
+                                </div>
+
+                                <button type="submit" className="w-full bg-black text-white p-5">
+                                    <span className="block text-lg font-light">登录 / LOGIN</span>
+                                </button>
+
+                                <div className="text-xs text-gray-500 text-center pt-4 border-t">
+                                    <div>演示账号: admin 或 member</div>
+                                    <div className="mt-2 text-gray-400">林克威(中国)管理咨询有限公司</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="max-w-md mx-auto bg-white min-h-screen">
+                    <div className="bg-black text-white p-8">
+                        <h1 className="text-3xl font-light mb-1">外资选址</h1>
+                        <p className="text-sm text-gray-400 mb-8">FDI PLATFORM</p>
+                        
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="border border-white p-4">
+                                <div className="text-4xl font-light mb-2">6</div>
+                                <div className="text-xs">项目 PROJECTS</div>
+                            </div>
+                            <div className="border border-white p-4">
+                                <div className="text-4xl font-light mb-2">19.9B</div>
+                                <div className="text-xs">投资 INVEST</div>
+                            </div>
+                            <div className="border border-white p-4">
+                                <div className="text-4xl font-light mb-2">5</div>
+                                <div className="text-xs">会议 MEETINGS</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="p-8">
+                        <h2 className="text-xl font-light mb-6">欢迎使用 / Welcome</h2>
+                        <div className="space-y-4">
+                            {['荷兰铁燃料 / Dutch Iron Fuel', '德国海洋养鱼 / German Fish Farm', '意大利纹身护理 / Italian Tattoo Care'].map((name, i) => (
+                                <div key={i} className="border-2 border-black p-4">
+                                    <p className="font-light">{name}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-12 border-t-2 border-black pt-8">
+                            <h3 className="text-lg font-light mb-4">联系我们 / CONTACT</h3>
+                            <div className="space-y-2 text-sm">
+                                <p>电话: 400-1032-292</p>
+                                <p className="text-gray-500">上海国际财富中心新金桥路35号北塔301D</p>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={() => { setIsLoggedIn(false); setUsername(''); setPassword(''); setAgreeTerms(false); }}
+                            className="w-full mt-8 border-2 border-black p-4 hover:bg-black hover:text-white"
+                        >
+                            退出登录 / LOGOUT
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>

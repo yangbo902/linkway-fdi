@@ -23,79 +23,148 @@
     <script type="text/babel">
         const { useState } = React;
 
-        const CheckCircle = ({ className }) => (
+        // 图标组件
+        const Icon = ({ d, className }) => (
             <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d} />
             </svg>
         );
 
-        const X = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        );
+        const CheckCircle = (props) => <Icon {...props} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />;
+        const X = (props) => <Icon {...props} d="M6 18L18 6M6 6l12 12" />;
+        const Menu = (props) => <Icon {...props} d="M4 6h16M4 12h16M4 18h16" />;
+        const Calendar = (props) => <Icon {...props} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />;
+        const Building2 = (props) => <Icon {...props} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />;
+        const Video = (props) => <Icon {...props} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />;
+        const CheckIcon = (props) => <Icon {...props} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />;
+        const Phone = (props) => <Icon {...props} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />;
+        const MapPin = (props) => <Icon {...props} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z" />;
+        const Clock = (props) => <Icon {...props} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />;
+        const Image = (props) => <Icon {...props} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />;
+        const FileVideo = (props) => <Icon {...props} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />;
+        const Upload = (props) => <Icon {...props} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />;
 
         const App = () => {
+            const [page, setPage] = useState('login');
             const [isLoggedIn, setIsLoggedIn] = useState(false);
             const [username, setUsername] = useState('');
             const [password, setPassword] = useState('');
-            const [agreeTerms, setAgreeTerms] = useState(false);
+            const [agree, setAgree] = useState(false);
             const [showTerms, setShowTerms] = useState(false);
+            const [showPrivacy, setShowPrivacy] = useState(false);
+            const [showMenu, setShowMenu] = useState(false);
+            const [selectedCompany, setSelectedCompany] = useState(null);
+            const [selectedDate, setSelectedDate] = useState('');
+            const [selectedTime, setSelectedTime] = useState('');
 
-            const handleLogin = (e) => {
+            const companies = [
+                { id: 1, name: '荷兰铁燃料技术公司', nameEn: 'Dutch Iron Fuel Tech', code: 'NL', investment: '需协商', investmentEn: 'TBD', status: '洽谈中', statusEn: 'Negotiating' },
+                { id: 2, name: '德国海洋养鱼场', nameEn: 'German Ocean Fish Farm', code: 'DE', investment: '300万欧元', investmentEn: '€3M', status: '已签约', statusEn: 'Signed' },
+                { id: 3, name: '意大利纹身护理', nameEn: 'Italian Tattoo Care', code: 'IT', investment: '100万欧元', investmentEn: '€1M', status: '已签约', statusEn: 'Signed' },
+                { id: 4, name: '法国精品酒庄', nameEn: 'French Premium Winery', code: 'FR', investment: '500万欧元', investmentEn: '€5M', status: '尽职调查', statusEn: 'Due Diligence' },
+                { id: 5, name: '瑞典智能家居', nameEn: 'Swedish Smart Home', code: 'SE', investment: '200万欧元', investmentEn: '€2M', status: '洽谈中', statusEn: 'Negotiating' },
+                { id: 6, name: '西班牙太阳能科技', nameEn: 'Spanish Solar Tech', code: 'ES', investment: '800万欧元', investmentEn: '€8M', status: '洽谈中', statusEn: 'Negotiating' }
+            ];
+
+            const meetings = [
+                { id: 1, company: '德国海洋养鱼场', companyEn: 'German Ocean Fish Farm', date: '2025-06-15', status: '已完成', statusEn: 'Completed', photos: 3, videos: 1 },
+                { id: 2, company: '意大利纹身护理', companyEn: 'Italian Tattoo Care', date: '2025-06-20', status: '已签约', statusEn: 'Signed', photos: 5, videos: 1 },
+                { id: 3, company: '荷兰铁燃料技术', companyEn: 'Dutch Iron Fuel', date: '2025-07-05', status: '已完成', statusEn: 'Completed', photos: 4, videos: 2 },
+                { id: 4, company: '法国精品酒庄', companyEn: 'French Winery', date: '2025-07-12', status: '待确认', statusEn: 'Pending', photos: 2, videos: 0 },
+                { id: 5, company: '瑞典智能家居', companyEn: 'Swedish Smart Home', date: '2025-07-18', status: '已完成', statusEn: 'Completed', photos: 6, videos: 1 }
+            ];
+
+            const signings = [
+                { id: 1, company: '德国海洋养鱼场', companyEn: 'German Ocean Fish Farm', amount: '300万欧元', amountEn: '€3M', date: '2025-06-20' },
+                { id: 2, company: '意大利纹身护理', companyEn: 'Italian Tattoo Care', amount: '100万欧元', amountEn: '€1M', date: '2025-05-15' }
+            ];
+
+            const login = (e) => {
                 e.preventDefault();
-                if (!username || !password) {
-                    alert('请填写用户名和密码');
-                    return;
-                }
-                if (!agreeTerms) {
-                    alert('请同意用户协议');
-                    return;
-                }
+                if (!username || !password) return alert('请填写用户名和密码');
+                if (!agree) return alert('请同意协议');
                 setIsLoggedIn(true);
+                setPage('home');
+            };
+
+            const handleAppointment = () => {
+                if (!selectedCompany || !selectedDate || !selectedTime) {
+                    alert('请填写所有信息');
+                    return;
+                }
+                alert('预约成功！');
+                setPage('home');
             };
 
             if (!isLoggedIn) {
                 return (
-                    <div className="max-w-md mx-auto bg-white min-h-screen flex items-center justify-center p-8">
+                    <div className="max-w-md mx-auto min-h-screen flex items-center justify-center p-8 bg-white">
                         <div className="w-full max-w-sm">
                             <div className="text-center mb-12">
-                                <div className="w-24 h-24 border-4 border-black flex items-center justify-center mx-auto mb-8">
+                                <div className="w-24 h-24 border-4 border-black mx-auto mb-8 flex items-center justify-center">
                                     <div className="text-center">
-                                        <div className="text-black font-bold text-xs">LINKWAY</div>
-                                        <div className="text-black text-[10px]">FDI</div>
+                                        <div className="text-black font-bold text-xs tracking-wider">LINKWAY</div>
+                                        <div className="text-black text-[10px] tracking-widest">FDI</div>
                                     </div>
                                 </div>
-                                <h1 className="text-4xl font-light text-black mb-2">外资选址</h1>
-                                <h2 className="text-lg font-light text-gray-400 mb-6">FOREIGN DIRECT INVESTMENT</h2>
-                                <div className="w-16 h-px bg-black mx-auto mb-8"></div>
+                                <h1 className="text-4xl font-light mb-2">外资选址</h1>
+                                <p className="text-lg font-light text-gray-400 tracking-widest">FOREIGN DIRECT INVESTMENT</p>
+                                <div className="w-16 h-px bg-black mx-auto my-8"></div>
                             </div>
 
                             {showTerms && (
                                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                                    <div className="bg-white max-w-lg w-full border-4 border-black">
-                                        <div className="bg-black text-white p-6 flex justify-between">
-                                            <h2 className="text-xl font-light">用户协议 / TERMS</h2>
+                                    <div className="bg-white max-w-lg w-full max-h-[80vh] overflow-y-auto border-4 border-black">
+                                        <div className="sticky top-0 bg-black text-white p-6 flex justify-between items-center">
+                                            <div>
+                                                <h2 className="text-xl font-light">用户协议</h2>
+                                                <p className="text-xs opacity-60">TERMS OF SERVICE</p>
+                                            </div>
                                             <button onClick={() => setShowTerms(false)} className="w-10 h-10 border border-white flex items-center justify-center">
                                                 <X className="w-5 h-5" />
                                             </button>
                                         </div>
-                                        <div className="p-6">
-                                            <p className="mb-4">欢迎使用林克威外资选址平台。</p>
-                                            <p className="text-sm text-gray-500">Welcome to Linkway FDI Platform.</p>
+                                        <div className="p-6 text-sm space-y-4">
+                                            <p>欢迎使用林克威外资选址平台。使用本平台服务前，请仔细阅读本协议。您使用本平台服务即表示同意接受本协议的全部条款。</p>
+                                            <p className="text-xs text-gray-500">Welcome to Linkway FDI Platform. By using this platform, you agree to all terms.</p>
                                         </div>
-                                        <div className="border-t-2 border-black p-6">
+                                        <div className="sticky bottom-0 bg-white border-t-2 border-black p-6">
                                             <button onClick={() => setShowTerms(false)} className="w-full bg-black text-white p-4">
-                                                我已阅读 / I UNDERSTAND
+                                                我已阅读 I UNDERSTAND
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             )}
 
-                            <form onSubmit={handleLogin} className="space-y-6">
+                            {showPrivacy && (
+                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                                    <div className="bg-white max-w-lg w-full max-h-[80vh] overflow-y-auto border-4 border-black">
+                                        <div className="sticky top-0 bg-black text-white p-6 flex justify-between items-center">
+                                            <div>
+                                                <h2 className="text-xl font-light">隐私政策</h2>
+                                                <p className="text-xs opacity-60">PRIVACY POLICY</p>
+                                            </div>
+                                            <button onClick={() => setShowPrivacy(false)} className="w-10 h-10 border border-white flex items-center justify-center">
+                                                <X className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                        <div className="p-6 text-sm space-y-4">
+                                            <p>我们重视您的隐私。我们收集您主动提供的信息用于提供更好的服务。</p>
+                                            <p className="text-xs text-gray-500">We value your privacy. Information collected is used to provide better services.</p>
+                                        </div>
+                                        <div className="sticky bottom-0 bg-white border-t-2 border-black p-6">
+                                            <button onClick={() => setShowPrivacy(false)} className="w-full bg-black text-white p-4">
+                                                我已阅读 I UNDERSTAND
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <form onSubmit={login} className="space-y-6">
                                 <div>
-                                    <div className="text-sm font-light mb-2">用户名 / USERNAME</div>
+                                    <div className="text-sm font-light mb-2">用户名 USERNAME</div>
                                     <input
                                         type="text"
                                         value={username}
@@ -106,7 +175,7 @@
                                 </div>
 
                                 <div>
-                                    <div className="text-sm font-light mb-2">密码 / PASSWORD</div>
+                                    <div className="text-sm font-light mb-2">密码 PASSWORD</div>
                                     <input
                                         type="password"
                                         value={password}
@@ -119,25 +188,26 @@
                                 <div className="flex items-start space-x-3">
                                     <button
                                         type="button"
-                                        onClick={() => setAgreeTerms(!agreeTerms)}
-                                        className={`w-6 h-6 border-2 border-black flex items-center justify-center flex-shrink-0 mt-1 ${agreeTerms ? 'bg-black' : 'bg-white'}`}
+                                        onClick={() => setAgree(!agree)}
+                                        className={`w-6 h-6 border-2 border-black flex items-center justify-center flex-shrink-0 mt-1 ${agree ? 'bg-black' : 'bg-white'}`}
                                     >
-                                        {agreeTerms && <CheckCircle className="w-4 h-4 text-white" />}
+                                        {agree && <CheckCircle className="w-4 h-4 text-white" />}
                                     </button>
-                                    <div className="text-xs">
-                                        同意 
+                                    <div className="text-xs leading-relaxed">
+                                        同意
                                         <button type="button" onClick={() => setShowTerms(true)} className="underline mx-1">用户协议</button>
-                                        / Agree to 
-                                        <button type="button" onClick={() => setShowTerms(true)} className="underline ml-1">Terms</button>
+                                        和
+                                        <button type="button" onClick={() => setShowPrivacy(true)} className="underline ml-1">隐私政策</button>
+                                        <div className="text-gray-500 mt-1">Agree to Terms and Privacy Policy</div>
                                     </div>
                                 </div>
 
                                 <button type="submit" className="w-full bg-black text-white p-5">
-                                    <span className="block text-lg font-light">登录 / LOGIN</span>
+                                    <span className="block text-lg font-light">登录 LOGIN</span>
                                 </button>
 
-                                <div className="text-xs text-gray-500 text-center pt-4 border-t">
-                                    <div>演示账号: admin 或 member</div>
+                                <div className="text-xs text-center text-gray-500 pt-4 border-t">
+                                    <div>演示账号: admin 或 member / 密码任意</div>
                                     <div className="mt-2 text-gray-400">林克威(中国)管理咨询有限公司</div>
                                 </div>
                             </form>
@@ -148,51 +218,315 @@
 
             return (
                 <div className="max-w-md mx-auto bg-white min-h-screen">
-                    <div className="bg-black text-white p-8">
-                        <h1 className="text-3xl font-light mb-1">外资选址</h1>
-                        <p className="text-sm text-gray-400 mb-8">FDI PLATFORM</p>
-                        
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="border border-white p-4">
-                                <div className="text-4xl font-light mb-2">6</div>
-                                <div className="text-xs">项目 PROJECTS</div>
-                            </div>
-                            <div className="border border-white p-4">
-                                <div className="text-4xl font-light mb-2">19.9B</div>
-                                <div className="text-xs">投资 INVEST</div>
-                            </div>
-                            <div className="border border-white p-4">
-                                <div className="text-4xl font-light mb-2">5</div>
-                                <div className="text-xs">会议 MEETINGS</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="p-8">
-                        <h2 className="text-xl font-light mb-6">欢迎使用 / Welcome</h2>
-                        <div className="space-y-4">
-                            {['荷兰铁燃料 / Dutch Iron Fuel', '德国海洋养鱼 / German Fish Farm', '意大利纹身护理 / Italian Tattoo Care'].map((name, i) => (
-                                <div key={i} className="border-2 border-black p-4">
-                                    <p className="font-light">{name}</p>
+                    {page === 'home' && (
+                        <div>
+                            <div className="bg-black text-white p-8">
+                                <div className="flex justify-between items-start mb-8">
+                                    <div>
+                                        <h1 className="text-3xl font-light mb-1">外资选址</h1>
+                                        <p className="text-sm text-gray-400 tracking-widest">FDI PLATFORM</p>
+                                    </div>
+                                    <button onClick={() => setShowMenu(!showMenu)} className="w-12 h-12 border border-white flex items-center justify-center">
+                                        {showMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                                    </button>
                                 </div>
-                            ))}
-                        </div>
 
-                        <div className="mt-12 border-t-2 border-black pt-8">
-                            <h3 className="text-lg font-light mb-4">联系我们 / CONTACT</h3>
-                            <div className="space-y-2 text-sm">
-                                <p>电话: 400-1032-292</p>
-                                <p className="text-gray-500">上海国际财富中心新金桥路35号北塔301D</p>
+                                {showMenu && (
+                                    <div className="border-t border-white pt-4 mb-8 space-y-2">
+                                        <button onClick={() => { setShowTerms(true); setShowMenu(false); }} className="w-full text-left py-3 border-b border-gray-700 px-4 text-sm">
+                                            用户协议 TERMS
+                                        </button>
+                                        <button onClick={() => { setShowPrivacy(true); setShowMenu(false); }} className="w-full text-left py-3 border-b border-gray-700 px-4 text-sm">
+                                            隐私政策 PRIVACY
+                                        </button>
+                                        <button onClick={() => { setIsLoggedIn(false); setShowMenu(false); }} className="w-full text-left py-3 border-b border-gray-700 px-4 text-sm">
+                                            退出登录 LOGOUT
+                                        </button>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="border border-white p-4">
+                                        <div className="text-3xl font-light mb-2">{companies.length}</div>
+                                        <div className="text-xs tracking-wider">项目<br/>PROJECTS</div>
+                                    </div>
+                                    <div className="border border-white p-4">
+                                        <div className="text-2xl font-light mb-2">19.9B</div>
+                                        <div className="text-xs tracking-wider">投资额<br/>INVEST</div>
+                                    </div>
+                                    <div className="border border-white p-4">
+                                        <div className="text-3xl font-light mb-2">{meetings.length}</div>
+                                        <div className="text-xs tracking-wider">会议<br/>MEETINGS</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-8 space-y-6">
+                                <div className="grid grid-cols-2 gap-6">
+                                    <button onClick={() => setPage('appointment')} className="border-2 border-black p-6 hover:bg-black hover:text-white transition-all">
+                                        <Calendar className="w-10 h-10 mb-4" />
+                                        <h3 className="font-light text-lg mb-1">预约会议</h3>
+                                        <p className="text-xs opacity-60">APPOINTMENT</p>
+                                    </button>
+                                    
+                                    <button onClick={() => setPage('companies')} className="border-2 border-black p-6 hover:bg-black hover:text-white transition-all">
+                                        <Building2 className="w-10 h-10 mb-4" />
+                                        <h3 className="font-light text-lg mb-1">企业管理</h3>
+                                        <p className="text-xs opacity-60">COMPANIES</p>
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-6">
+                                    <button onClick={() => setPage('meetings')} className="border border-black p-6 hover:bg-gray-100">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <Video className="w-8 h-8" />
+                                            <span className="text-2xl font-light">{meetings.length}</span>
+                                        </div>
+                                        <h3 className="text-sm font-light">会议记录</h3>
+                                        <p className="text-xs text-gray-500">MEETINGS</p>
+                                    </button>
+                                    
+                                    <button onClick={() => setPage('signings')} className="border border-black p-6 hover:bg-gray-100">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <CheckIcon className="w-8 h-8" />
+                                            <span className="text-2xl font-light">{signings.length}</span>
+                                        </div>
+                                        <h3 className="text-sm font-light">签约记录</h3>
+                                        <p className="text-xs text-gray-500">SIGNINGS</p>
+                                    </button>
+                                </div>
+
+                                <div className="border-t-2 border-black pt-8 mt-12">
+                                    <h3 className="text-lg font-light mb-4">联系我们 CONTACT</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center space-x-3">
+                                            <Phone className="w-4 h-4" />
+                                            <span className="text-sm">400-1032-292</span>
+                                        </div>
+                                        <div className="flex items-start space-x-3">
+                                            <MapPin className="w-4 h-4 mt-0.5" />
+                                            <div className="text-xs leading-relaxed">
+                                                <div>上海国际财富中心新金桥路35号北塔301D</div>
+                                                <div className="text-gray-500 mt-1">301D, North Tower, No. 35 Xinjinqiao Road, Shanghai</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    )}
 
-                        <button 
-                            onClick={() => { setIsLoggedIn(false); setUsername(''); setPassword(''); setAgreeTerms(false); }}
-                            className="w-full mt-8 border-2 border-black p-4 hover:bg-black hover:text-white"
-                        >
-                            退出登录 / LOGOUT
-                        </button>
-                    </div>
+                    {page === 'companies' && (
+                        <div>
+                            <div className="bg-black text-white p-8">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h2 className="text-2xl font-light">企业管理</h2>
+                                        <p className="text-xs text-gray-400">COMPANIES</p>
+                                    </div>
+                                    <button onClick={() => setPage('home')} className="w-10 h-10 border border-white flex items-center justify-center">
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="p-8 space-y-6">
+                                {companies.map(company => (
+                                    <div key={company.id} className="border-2 border-black p-6">
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center space-x-4 flex-1">
+                                                <div className="w-12 h-12 border-2 border-black flex items-center justify-center flex-shrink-0">
+                                                    <span className="text-xs font-bold">{company.code}</span>
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-light text-base mb-1">{company.name}</h3>
+                                                    <p className="text-sm text-gray-500">{company.nameEn}</p>
+                                                </div>
+                                            </div>
+                                            <div className={`px-3 py-1 text-xs font-light border ${company.status === '已签约' ? 'border-black bg-black text-white' : 'border-gray-400'}`}>
+                                                {company.status}
+                                            </div>
+                                        </div>
+                                        <div className="border-t border-gray-300 pt-4 space-y-2 text-sm">
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-500">投资额:</span>
+                                                <span>{company.investment} / {company.investmentEn}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {page === 'meetings' && (
+                        <div>
+                            <div className="bg-black text-white p-8">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h2 className="text-2xl font-light">会议记录</h2>
+                                        <p className="text-xs text-gray-400">MEETINGS</p>
+                                    </div>
+                                    <button onClick={() => setPage('home')} className="w-10 h-10 border border-white flex items-center justify-center">
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="p-8 space-y-6">
+                                {meetings.map(meeting => (
+                                    <div key={meeting.id} className="border-2 border-black p-6">
+                                        <div className="flex justify-between mb-4">
+                                            <div>
+                                                <h3 className="font-light text-lg mb-1">{meeting.company}</h3>
+                                                <p className="text-sm text-gray-500 mb-3">{meeting.companyEn}</p>
+                                                <div className="flex items-center text-sm text-gray-600">
+                                                    <Clock className="w-4 h-4 mr-2" />
+                                                    <span>{meeting.date}</span>
+                                                </div>
+                                            </div>
+                                            <div className="border border-black px-3 py-1 text-xs h-fit">
+                                                {meeting.status}
+                                            </div>
+                                        </div>
+                                        <div className="border-t border-gray-300 pt-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="border border-black p-4 text-center">
+                                                    <Image className="w-6 h-6 mx-auto mb-2" />
+                                                    <div className="text-xs">照片 {meeting.photos}</div>
+                                                </div>
+                                                <div className="border border-black p-4 text-center">
+                                                    <FileVideo className="w-6 h-6 mx-auto mb-2" />
+                                                    <div className="text-xs">视频 {meeting.videos}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {page === 'signings' && (
+                        <div>
+                            <div className="bg-black text-white p-8">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h2 className="text-2xl font-light">签约记录</h2>
+                                        <p className="text-xs text-gray-400">SIGNINGS</p>
+                                    </div>
+                                    <button onClick={() => setPage('home')} className="w-10 h-10 border border-white flex items-center justify-center">
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="p-8 space-y-6">
+                                {signings.map(signing => (
+                                    <div key={signing.id} className="border-2 border-black p-6">
+                                        <div className="flex justify-between mb-4">
+                                            <div>
+                                                <h3 className="font-light text-lg mb-1">{signing.company}</h3>
+                                                <p className="text-sm text-gray-500 mb-2">{signing.companyEn}</p>
+                                                <div className="text-sm mb-2">
+                                                    <span className="text-gray-500">签约金额: </span>
+                                                    <span>{signing.amount} / {signing.amountEn}</span>
+                                                </div>
+                                                <div className="flex items-center text-sm text-gray-600">
+                                                    <Clock className="w-4 h-4 mr-2" />
+                                                    <span>{signing.date}</span>
+                                                </div>
+                                            </div>
+                                            <div className="bg-black text-white px-3 py-1 text-xs h-fit">
+                                                已签约 SIGNED
+                                            </div>
+                                        </div>
+                                        <div className="border-t border-gray-300 pt-4">
+                                            <button className="w-full border-2 border-black p-4 hover:bg-black hover:text-white">
+                                                查看合同 VIEW CONTRACT
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {page === 'appointment' && (
+                        <div>
+                            <div className="bg-black text-white p-8">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h2 className="text-2xl font-light">预约会议</h2>
+                                        <p className="text-xs text-gray-400">APPOINTMENT</p>
+                                    </div>
+                                    <button onClick={() => setPage('home')} className="w-10 h-10 border border-white flex items-center justify-center">
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="p-8 space-y-8">
+                                <div>
+                                    <div className="text-sm font-light mb-4">选择企业 SELECT COMPANY</div>
+                                    <div className="space-y-4">
+                                        {companies.map(company => (
+                                            <button
+                                                key={company.id}
+                                                onClick={() => setSelectedCompany(company.id)}
+                                                className={`w-full border-2 p-4 text-left ${selectedCompany === company.id ? 'border-black bg-black text-white' : 'border-gray-300'}`}
+                                            >
+                                                <div className="flex items-center space-x-3">
+                                                    <div className="w-10 h-10 border-2 border-current flex items-center justify-center">
+                                                        <span className="text-xs font-bold">{company.code}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-sm font-light">{company.name}</div>
+                                                        <div className="text-xs opacity-60">{company.nameEn}</div>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="text-sm font-light mb-4">选择日期 SELECT DATE</div>
+                                    <input
+                                        type="date"
+                                        value={selectedDate}
+                                        onChange={(e) => setSelectedDate(e.target.value)}
+                                        className="w-full p-4 border-2 border-black outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <div className="text-sm font-light mb-4">选择时间 SELECT TIME</div>
+                                    <select
+                                        value={selectedTime}
+                                        onChange={(e) => setSelectedTime(e.target.value)}
+                                        className="w-full p-4 border-2 border-black outline-none bg-white"
+                                    >
+                                        <option value="">选择时间 SELECT TIME</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                    </select>
+                                </div>
+
+                                <button
+                                    onClick={handleAppointment}
+                                    className="w-full bg-black text-white p-6 hover:bg-gray-800"
+                                >
+                                    <span className="block text-lg font-light">确认预约</span>
+                                    <span className="block text-xs opacity-60">CONFIRM</span>
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         };
